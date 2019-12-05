@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Audio Vizualizer</title>
+    <style>
+      body {background:black;}
+      p {
+        color:white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1;
+        font-size: 5;
+      }
+      canvas {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <p></p>
+    <script>
+      var debug = false;
+      var debugtarget = document.querySelector("p");
+
+      var audioContext = new AudioContext();
+
+      navigator.mediaDevices.getUserMedia({audio:true})
+      .then(()=>{
+        navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          let device = devices.find(d => d.label.includes("CABLE"));
+          navigator.mediaDevices.getUserMedia(
+            {audio: {deviceId: device.deviceId}}
+          )
+          .then(stream => {
+            var track = audioContext.createMediaStreamSource(stream);
+
+            var analyser = audioContext.createAnalyser();
+            track.connect(analyser);
+
+            analyser.fftSize = 2048;
+            // analyser.smoothingTimeConstant = .85;
+            // analyser.minDecibels = -100;
+            // analyser.maxDecibels = -30;
+            bufferlength = analyser.frequencyBinCount;
+            var dataArray = new Uint8Array(bufferlength);
+
+            var lastframetime;
+            var frametime = 0;
+            var bufferlength;
+
+            var canvas = document.querySelector("canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var ctx = canvas.getContext("2d");
+
+            var WIDTH = canvas.width;
+            var HEIGHT = canvas.height;
+
+            var barWidth = ((WIDTH) / bufferlength)/2;
+            var barPix = Math.ceil(barWidth);
+            var mid = (WIDTH/2)-(barPix/2);
+            var HUnit = HEIGHT / (256 * 2);
+            
+            var loudness;
+            var hype;
+            var bass;
+            var rects;
+
+            function debugText() {
+              if (debug) {
+                debugtarget.innerHTML = [
+                  "bufferlength: " + bufferlength,
+                  "frame: " + frametime.toFixed(2),
+                  "width: " + canvas.width,
+                  "height: " + canvas.height,
+                  "loudness: " + loudness.toFixed(2),
+                  "hype: " + hype.toFixed(2),
+                  "hueshift: " + hueshift.toFixed(2),
+                  "bass: " + bass.toFixed(2),
+                ].join("<br>");
+              }
+            }
+
+            var hueoffset = 180;
+            var huerange = 120;
+            var hueshift = 0;
+
+            function callback(v, i) {
+                return {
+                  x: (i * barWidth), // x+WMID-(barPix/2) for right, WMID-(barPix/2)-x for left
+                  y: v * HUnit,
+                  width: barPix,
+                  height: v * loudness * HUnit,
+                  hue: (huerange*loudness*(i/bufferlength) + (hueoffset)) % 360,
+                };
+              }
+
+            function renderFrame() {
+              requestAnimationFrame(renderFrame);
+              
+              lastframetime = performance.now();
+
+              analyser.getByteFrequencyData(dataArray);
+
+              loudness = 1.3*Math.cbrt(dataArray.reduce((a, v) => (a + (v/255)**2), 0) / dataArray.length);
+              hype = ((loudness+.2)**3);
+              hype = ((hype + ((hype-.1)**4)/2));
+              
+              hueshift = 0.05 + ((2*hype)**1.5)/2.25;
+              hueoffset = (hueoffset - hueshift);
+
+              bars = [];
+              dataArray.forEach((v, i) => bars.push(callback(v,i)));
+
+              var rang = Math.ceil(bufferlength/20);
+              bass = dataArray.slice(0, rang).reduce((a, v) => (a + v), 0) / (rang * 255);
+
+              var min = HEIGHT;
+              var max = 0;
+              bars.forEach((b) => {
+                if (b.y < min) min = b.y;
+                if ((b.y + b.height) > max) max = b.y + b.height;
+              });
+              offset = (HEIGHT/2) - ((max-min)/2);
+
+              var grad = ctx.createRadialGradient(WIDTH/2, HEIGHT/2, HEIGHT*bass*.6, WIDTH/2, HEIGHT/2, WIDTH/2);
+              grad.addColorStop(0, "hsl(0,0%,10%)");
+              grad.addColorStop(1, "#000");
+              ctx.fillStyle = grad;
+              ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+              bars.forEach((b) => {
+                ctx.fillStyle = "hsl(" + b.hue + ",100%,65%)";
+                ctx.fillRect(mid+b.x, b.y+offset, b.width, b.height);
+                ctx.fillRect(mid-b.x, b.y+offset, b.width, b.height);
+              });
+
+              frametime = performance.now() - lastframetime;
+              debugText();
+            }
+
+            renderFrame();
+          });
+        })
+      });
+    </script>
+  </body>
+</html>
