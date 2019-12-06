@@ -3,7 +3,7 @@
 # Setup
 Arael is intended to be run on system audio, though this requires a bit of setup.
 
-* Install a Virtual Audio Cable driver.
+* Install a Virtual Audio Cable driver. [This one](https://www.vb-audio.com/Cable/) has worked well for me.
 * Set the VAC Output to be listened to on your prefered audio output (or let it take the default).
 * Open "App volume and device preferences" in Windows.
 * For any applications you want the visualizer to listen to, set the output device to the VAC Input.
