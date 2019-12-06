@@ -1,3 +1,5 @@
+![Arael in action](https://repository-images.githubusercontent.com/226207572/d33e6580-1791-11ea-9829-89cc6dbb1868)
+
 # Setup
 Arael is intended to be run on system audio, though this requires a bit of setup.
 
