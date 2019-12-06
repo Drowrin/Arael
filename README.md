@@ -9,5 +9,6 @@ Arael is intended to be run on system audio, though this requires a bit of setup
 * For any applications you want the visualizer to listen to, set the output device to the VAC Input.
 
 You can then use the visualizer at https://drowrin.github.io/Arael/
+Make sure to pick the Virtual Audio Cable if your browser asks you for permission and to pick a mic.
 
 If you want to use this in an OBS browser source, you'll need launch OBS with `--enable-media-stream`. You can edit your shortcut to make this easy.
