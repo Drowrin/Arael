@@ -8,6 +8,8 @@ Arael is intended to be run on system audio, though this requires a bit of setup
 * Open "App volume and device preferences" in Windows.
 * For any applications you want the visualizer to listen to, set the output device to the VAC Input.
 
+Alternatively, you can use the "Stereo Mix" recording device if your sound card supports it. I've found it to have more noticeable latency, but it might be an easier way to preview Arael.
+
 You can then use the visualizer at https://drowrin.github.io/Arael/
 Make sure to pick the Virtual Audio Cable if your browser asks you for permission and to pick a mic.
 
