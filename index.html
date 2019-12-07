@@ -129,7 +129,18 @@
                 if (b.y < min) min = b.y;
                 if ((b.y + b.height) > max) max = b.y + b.height;
               });
-              offset = (HEIGHT/2) - ((max-min)/2);
+              var padding = (HEIGHT/2) - ((max-min)/2);
+
+              var sum = 0;
+              var count = 0;
+              bars.forEach((b) => {
+                sum += (b.height + 1)*(b.height + (2*b.y))/2;
+                count += b.height;
+              });
+              var center = (sum / count);
+
+              var centroidRatio = 0.3;
+              var offset = centroidRatio*((HEIGHT/2) - center) + (1-centroidRatio)*padding - 0.03*HEIGHT;
 
               var grad = ctx.createRadialGradient(WIDTH/2, HEIGHT/2, HEIGHT*bass*.6, WIDTH/2, HEIGHT/2, WIDTH/2);
               grad.addColorStop(0, "hsl(0,0%,10%)");
@@ -142,6 +153,10 @@
                 ctx.fillRect(mid+b.x, b.y+offset, b.width, b.height);
                 ctx.fillRect(mid-b.x, b.y+offset, b.width, b.height);
               });
+
+              // Uncomment to draw vertical center.
+              // ctx.fillStyle = "hsl(0,0%,100%)";
+              // ctx.fillRect(WIDTH/4, center + offset, WIDTH/2, 1);
 
               frametime = performance.now() - lastframetime;
               debugText();
