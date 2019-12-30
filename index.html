@@ -32,8 +32,10 @@
     <p></p>
 
     <script>
+      let url = new URL(window.location.href);
+
       // Enable or disable debug info displayed in the top left corner
-      var debug = false;
+      var debug = url.searchParams.get("debug");
 
       var debugtarget = document.querySelector("p");
       var audioContext = new AudioContext();
