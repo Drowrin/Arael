@@ -138,7 +138,7 @@
               hueshift = 0.05 + ((2*hype)**1.5)/2.25;
               hueoffset = (hueoffset - hueshift);
 
-              var rang = Math.ceil(bufferlength/20);
+              var rang = Math.ceil(bufferlength/100);
               bass = dataArray.slice(0, rang).reduce((a, v) => (a + v), 0) / (rang * 255);
 
               // Create the array of bars
@@ -170,7 +170,12 @@
               // Draw a grey circle in the back that fades to black in the corners.
               // Control size by bass to give a pulsing effect.
               var grad = ctx.createRadialGradient(WIDTH/2, HEIGHT/2, HEIGHT*bass*.6, WIDTH/2, HEIGHT/2, WIDTH/2);
+              var bass_op = 2-(bass**0.2);
+              if (bass_op < 0.0) bass_op = 0.0;
               grad.addColorStop(0, "hsl(0,0%,10%)");
+              grad.addColorStop(0.1, "hsl(0,0%,10%)");
+              grad.addColorStop(0.15, "hsl(0,0%,11.5%)");
+              grad.addColorStop(0.2, "hsl(0,0%,10%)");
               grad.addColorStop(1, "#000");
               ctx.fillStyle = grad;
               ctx.fillRect(0, 0, WIDTH, HEIGHT);
