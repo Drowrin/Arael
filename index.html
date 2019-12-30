@@ -72,6 +72,7 @@
 
             // Time tracking variables
             var lastframetime;
+            var framedelay;
             var frametime = 0;
 
             // Setup canvas element
@@ -104,6 +105,7 @@
                 debugtarget.innerHTML = [
                   "bufferlength: " + bufferlength,
                   "frame time: " + frametime.toFixed(2),
+                  "frame delay: " + framedelay.toFixed(2),
                   "width: " + canvas.width,
                   "height: " + canvas.height,
                   "loudness: " + loudness.toFixed(2),
@@ -128,6 +130,7 @@
             // Draw a frame based on the current sound
             function renderFrame() {
               // Time tracking
+              framedelay = performance.now() - lastframetime;
               lastframetime = performance.now();
 
               // Get data on the current sound
