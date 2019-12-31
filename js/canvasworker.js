@@ -57,7 +57,7 @@ function animate() {
         }
 
         // Create the array of bars
-        bars = [];
+        var bars = [];
         dataArray.forEach((v, i) => bars.push(createBar(v,i)));
 
         // Determine vertical offset based on min, max, and centroid
@@ -85,10 +85,12 @@ function animate() {
         // Draw a grey circle in the back that fades to black in the corners.
         // Control size by bass to give a pulsing effect.
         var grad = ctx.createRadialGradient(WIDTH/2, HEIGHT/2, HEIGHT*data.bass*.55, WIDTH/2, HEIGHT/2, WIDTH/2);
-        var bass_op = 2-(data.bass**0.2);
-        if (bass_op < 0.0) bass_op = 0.0;
-        grad.addColorStop(0, "hsl(0,0%,0%)");
-        grad.addColorStop(0.00, "hsl(0,0%,3%)");
+        var bassmult = 1.0;
+        if (data.bass < .4) {
+            bassmult = data.bass / .4;
+        }
+        grad.addColorStop(0.00, "hsl(0,0%,0%)");
+        grad.addColorStop(0.01, "hsl(0,0%," + 4.5*bassmult + "%)");
         grad.addColorStop(0.1, "hsl(0,0%,0%)");
         grad.addColorStop(1, "#000");
         ctx.fillStyle = grad;
