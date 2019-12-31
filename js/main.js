@@ -11,7 +11,7 @@ function createWindow () {
         fullscreenable: true
     })
 
-    mainWindow.removeMenu();
+    mainWindow.setMenu(null);
 
     mainWindow.loadFile('index.html')
 
@@ -26,6 +26,10 @@ function createWindow () {
 app.on('ready', () => {
     globalShortcut.register('CommandOrControl+F', () => {
         mainWindow.setFullScreen(!mainWindow.isFullScreen());
+    });
+    globalShortcut.register('CommandOrControl+D', () => {
+        mainWindow.webContents.openDevTools();
+        mainWindow.webContents.send('toggle-debug');
     });
     createWindow();
 })
