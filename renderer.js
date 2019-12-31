@@ -1,10 +1,4 @@
-const { ipcRenderer } = require('electron');
-
-var debug = false;
-
-ipcRenderer.on('toggle-debug', function (event) {
-    debug = !debug;
-});
+debug = false;
 
 var debugtarget = document.querySelector("p");
 var audioContext = new AudioContext();
@@ -20,15 +14,13 @@ var dataArray = new Uint8Array(DATA_LENGTH);
 // var canvas = document.querySelector("canvas").transferControlToOffscreen();
 
 const offscreen = document.querySelector('canvas').transferControlToOffscreen();
-const canvasworker = new Worker('./js/canvasworker.js');
+const canvasworker = new Worker('canvasworker.js');
 canvasworker.postMessage({msg: 'init', canvas: offscreen, array: sharedarrayhandle}, [offscreen]);
 
 canvasworker.onmessage = function(ev) {
     if (ev.data.msg === 'debug') {
         if (debug) {
             debugtarget.innerHTML = ev.data.debug + "<br>proccessing time: " + (performance.now() - thistick).toFixed(2);
-        } else {
-            debugtarget.innerHTML = "";
         }
     }
 }
@@ -69,7 +61,7 @@ async function main() {
     let device = devices.find(d => d.label.includes("CABLE"));
 
     // Get the VAC device by id.
-    var stream = await navigator.mediaDevices.getUserMedia({audio: {deviceId: device.deviceId}});
+    stream = await navigator.mediaDevices.getUserMedia({audio: {deviceId: device.deviceId}});
 
     // Create and connect an audio analyser to our audio source
     var analyser = audioContext.createAnalyser();

@@ -1,64 +1,22 @@
 {
   "name": "arael",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Audio Visualizer",
-  "main": "./js/main.js",
+  "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Drowrin/Arael.git"
   },
-  "author": "Drowrin <drowrin@gmail.com>",
+  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Drowrin/Arael/issues"
   },
   "homepage": "https://github.com/Drowrin/Arael#readme",
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "electron-forge": "^5.2.4",
-    "electron-prebuilt-compile": "4.0.0"
-  },
-  "dependencies": {
-    "electron-compile": "^6.4.4",
-    "electron-squirrel-startup": "^1.0.0"
-  },
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "npm"
-      },
-      "electronWinstallerConfig": {
-        "name": "arael"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "arael"
-      }
-    }
+    "electron": "^7.1.7"
   }
 }
