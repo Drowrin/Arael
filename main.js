@@ -7,6 +7,26 @@ var debug = url.searchParams.get("debug");
 var debugtarget = document.querySelector("p");
 var audioContext = new AudioContext();
 
+const DATA_LENGTH = 1024;
+
+// Setup canvas element
+var canvas = document.querySelector("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var ctx = canvas.getContext("2d");
+
+// Convenience variables for tracking dimensions
+var WIDTH = canvas.width;
+var HEIGHT = canvas.height;
+var barWidth = ((WIDTH) / DATA_LENGTH)/2;
+var barPix = Math.ceil(barWidth);
+var mid = (WIDTH/2)-(barPix/2);
+var HUnit = HEIGHT / (256 * 2);
+
+// const offscreen = document.querySelector("canvas");
+// const canvasworker = new Worker('canvasworker.js');
+// canvasworker.postMessage({canvas: offscreen}, [offscreen]);
+
 // Get user permission to use audio device
 navigator.mediaDevices.getUserMedia({audio: true})
 .then(()=>{
@@ -27,7 +47,7 @@ navigator.mediaDevices.getUserMedia({audio: true})
         audioContext.createMediaStreamSource(stream).connect(analyser);
 
         // Analyser settings. Different values here may suit different tastes.
-        analyser.fftSize = 2048;
+        analyser.fftSize = DATA_LENGTH * 2;
         // analyser.smoothingTimeConstant = .85;
         // analyser.minDecibels = -100;
         // analyser.maxDecibels = -30;
@@ -40,20 +60,6 @@ navigator.mediaDevices.getUserMedia({audio: true})
         var lastframetime;
         var framedelay;
         var frametime = 0;
-
-        // Setup canvas element
-        var canvas = document.querySelector("canvas");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        var ctx = canvas.getContext("2d");
-
-        // Convenience variables for tracking dimensions
-        var WIDTH = canvas.width;
-        var HEIGHT = canvas.height;
-        var barWidth = ((WIDTH) / dataArray.length)/2;
-        var barPix = Math.ceil(barWidth);
-        var mid = (WIDTH/2)-(barPix/2);
-        var HUnit = HEIGHT / (256 * 2);
         
         // Variables used in the loop to describe properties of the current sound
         var loudness;
@@ -144,9 +150,9 @@ navigator.mediaDevices.getUserMedia({audio: true})
             var grad = ctx.createRadialGradient(WIDTH/2, HEIGHT/2, HEIGHT*bass*.55, WIDTH/2, HEIGHT/2, WIDTH/2);
             var bass_op = 2-(bass**0.2);
             if (bass_op < 0.0) bass_op = 0.0;
-            grad.addColorStop(0, "hsl(0,0%,8%)");
-            grad.addColorStop(0.00, "hsl(0,0%,11%)");
-            grad.addColorStop(0.1, "hsl(0,0%,8%)");
+            grad.addColorStop(0, "hsl(0,0%,0%)");
+            grad.addColorStop(0.00, "hsl(0,0%,3%)");
+            grad.addColorStop(0.1, "hsl(0,0%,.5%)");
             grad.addColorStop(1, "#000");
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, WIDTH, HEIGHT);
