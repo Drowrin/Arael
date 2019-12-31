@@ -10,7 +10,4 @@ Arael is intended to be run on system audio, though this requires a bit of setup
 
 Alternatively, you can use the "Stereo Mix" recording device if your sound card supports it. I've found it to have more noticeable latency, but it might be an easier way to preview Arael.
 
-You can then use the visualizer at https://drowrin.github.io/Arael/
-Make sure to pick the Virtual Audio Cable if your browser asks you for permission and to pick a mic.
-
-If you want to use this in an OBS browser source, you'll need launch OBS with `--enable-media-stream`. You can edit your shortcut to make this easy.
+This project is not yet ready for full release, but with node.js you can install and run it through there.
