@@ -1,43 +1,46 @@
-const {app, BrowserWindow, globalShortcut} = require('electron')
-const path = require('path')
+const {app, BrowserWindow, globalShortcut} = require('electron');
+const electronLocalshortcut = require('electron-localshortcut');
+const path = require('path');
 
-let mainWindow
+let win;
 
 function createWindow () {
-    mainWindow = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1280,
         height: 720,
-        webPreferences: { experimentalCanvasFeatures: true },
+        webPreferences: {
+            nodeIntegration: true
+        },
         fullscreenable: true
-    })
+    });
 
-    mainWindow.setMenu(null);
+    electronLocalshortcut.register(win, 'CommandOrControl+Shift+F', () => {
+        win.setFullScreen(!win.isFullScreen());
+    });
+    
+    electronLocalshortcut.register(win, 'CommandOrControl+Shift+D', () => {
+        win.webContents.send('toggle-debug');
+    });
 
-    mainWindow.loadFile('index.html')
+    electronLocalshortcut.register(win, 'CommandOrControl+Shift+I', () => {
+        win.webContents.openDevTools();
+    });
 
-    // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    win.setMenu(null);
 
-    mainWindow.on('closed', function () {
-        mainWindow = null
+    win.loadFile('index.html');
+
+    win.on('closed', function () {
+        win = null;
     })
 }
 
-app.on('ready', () => {
-    globalShortcut.register('CommandOrControl+F', () => {
-        mainWindow.setFullScreen(!mainWindow.isFullScreen());
-    });
-    globalShortcut.register('CommandOrControl+D', () => {
-        // mainWindow.webContents.openDevTools();
-        mainWindow.webContents.send('toggle-debug');
-    });
-    createWindow();
-})
+app.on('ready', createWindow);
 
 app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') app.quit()
-})
+    if (process.platform !== 'darwin') app.quit();
+});
 
 app.on('activate', function () {
-    if (mainWindow === null) createWindow()
-})
+    if (win === null) createWindow();
+});
