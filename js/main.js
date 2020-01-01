@@ -16,7 +16,7 @@ function createWindow () {
     mainWindow.loadFile('index.html')
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     mainWindow.on('closed', function () {
         mainWindow = null
@@ -28,7 +28,7 @@ app.on('ready', () => {
         mainWindow.setFullScreen(!mainWindow.isFullScreen());
     });
     globalShortcut.register('CommandOrControl+D', () => {
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
         mainWindow.webContents.send('toggle-debug');
     });
     createWindow();
