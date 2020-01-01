@@ -5,7 +5,7 @@ const DATA_LENGTH = 1024;
 const RATE = 5;
 
 
-var debug = true;
+var debug = false;
 ipcRenderer.on('toggle-debug', function (event) {
     debug = !debug;
 });
@@ -42,12 +42,13 @@ let huerange = 120;
 
 // Time tracking
 var lastframetime;
+var framestarttime;
+var frameend;
 var framedelay;
 var frametime = 0;
 var thistick;
-function rate() {
-    return sleep(RATE - (performance.now() - thistick));
-}
+var ticktime;
+var proctime;
 
 async function main() {
     // Get user permission to use audio device
@@ -73,8 +74,11 @@ async function main() {
     // analyser.maxDecibels = -30;
 
     function animate() {
+        requestAnimationFrame(animate);
+
         // Time tracking
-        framedelay = performance.now() - lastframetime;
+        framestarttime = performance.now() - lastframetime;
+        framedelay = performance.now() - frameend;
         lastframetime = performance.now();
 
         // Convenience variables for tracking dimensions
@@ -143,16 +147,30 @@ async function main() {
         // ctx.fillRect(WIDTH/4, center + offset, WIDTH/2, 1);
 
         // Time tracking
-        frametime = performance.now() - lastframetime;
+        frameend = performance.now();
+        frametime = frameend - lastframetime;
 
         // Display debug info if enabled
         if (debug) {
             debugtarget.innerHTML = [
-                "bufferlength: " + dataArray.length,
-                "frame time: " + frametime.toFixed(2),
-                "frame delay: " + framedelay.toFixed(2),
                 "width: " + canvas.width,
                 "height: " + canvas.height,
+
+                "",
+
+                "draw time: " + frametime.toFixed(2),
+                "delay after frame: " + framedelay.toFixed(2),
+                "total frame time: " + framestarttime.toFixed(2),
+                "framerate: " + (1000.0 / framestarttime).toFixed(2),
+
+                "",
+
+                "processing time: " + proctime.toFixed(2),
+                "tick time: " + ticktime.toFixed(2),
+                "tickrate: " + (1000.0 / ticktime).toFixed(2),
+
+                "",
+
                 "loudness: " + loudness.toFixed(2),
                 "hype: " + hype.toFixed(2),
                 "bass: " + bass.toFixed(2),
@@ -160,8 +178,6 @@ async function main() {
         } else {
             debugtarget.innerHTML = "";
         }
-
-        requestAnimationFrame(animate);
     }
 
     // Start animating
@@ -169,6 +185,7 @@ async function main() {
 
     // Proccess audio data
     while (true) {
+        ticktime = performance.now() - thistick;
         thistick = performance.now();
 
         // Get data on the current sound
@@ -179,13 +196,15 @@ async function main() {
         hype = ((loudness+.2)**3);
         hype = ((hype + ((hype-.1)**4)/2));
         
-        hueshift = 0.05 + ((2*hype)**1.5)/4;
+        hueshift = 0.05 + ((2*hype)**1.5)/4.5;
         hueoffset = (hueoffset - hueshift);
 
         var rang = Math.ceil(DATA_LENGTH/100);
         bass = dataArray.slice(0, rang).reduce((a, v) => (a + v), 0) / (rang * 255);
 
-        await rate();
+        proctime = performance.now() - thistick;
+
+        await sleep(5 - proctime);
     }
 }
 
