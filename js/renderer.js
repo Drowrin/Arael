@@ -204,7 +204,7 @@ async function main() {
 
         proctime = performance.now() - thistick;
 
-        await sleep(5 - proctime);
+        await sleep(RATE - proctime);
     }
 }
 
