@@ -69,7 +69,7 @@ async function main() {
 
     // Analyser settings. Different values here may suit different tastes.
     analyser.fftSize = DATA_LENGTH * 2;
-    // analyser.smoothingTimeConstant = .85;
+    analyser.smoothingTimeConstant = .70;
     // analyser.minDecibels = -100;
     // analyser.maxDecibels = -30;
 
@@ -102,7 +102,7 @@ async function main() {
                 // Determine vertical offset based on min, max, and centroid
         // places the image roughly in the center without shaking too violently.
         // centroidRatio controls how much smoothness is applied.
-        var centroidRatio = 0.2;
+        var centroidRatio = 0.1;
 
         var min = HEIGHT;
         var max = 0;
