@@ -52,6 +52,7 @@ var proctime;
 var animframe;
 
 async function main() {
+    // Get desktop audio
     const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
             mandatory: {
@@ -99,7 +100,7 @@ async function main() {
             hue: (huerange*loudness*(i/dataArray.length) + (hueoffset)) % 360,
         }));
 
-                // Determine vertical offset based on min, max, and centroid
+        // Determine vertical offset based on min, max, and centroid
         // places the image roughly in the center without shaking too violently.
         // centroidRatio controls how much smoothness is applied.
         var centroidRatio = 0.1;
@@ -201,6 +202,7 @@ async function main() {
 
         proctime = performance.now() - thistick;
 
+        // Request frame with latest data
         cancelAnimationFrame(animframe);
         animframe = requestAnimationFrame(animate);
 
