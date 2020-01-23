@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, desktopCapturer } = require('electron');
 
 // Constants
 const DATA_LENGTH = 1024;
@@ -51,17 +51,18 @@ var ticktime;
 var proctime;
 
 async function main() {
-    // Get user permission to use audio device
-    await navigator.mediaDevices.getUserMedia({audio: true});
-
-    // Look through possible devices
-    let devices = await navigator.mediaDevices.enumerateDevices();
-
-    // Find the Virtual Audio Cable
-    let device = devices.find(d => d.label.includes("CABLE"));
-
-    // Get the VAC device by id.
-    var stream = await navigator.mediaDevices.getUserMedia({audio: {deviceId: device.deviceId}});
+    const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+            mandatory: {
+                chromeMediaSource: 'desktop'
+            }
+        },
+        video: {
+            mandatory: {
+                chromeMediaSource: 'desktop'
+            }
+        }
+    });
 
     // Create and connect an audio analyser to our audio source
     var analyser = audioContext.createAnalyser();
