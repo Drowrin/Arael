@@ -49,6 +49,7 @@ var frametime = 0;
 var thistick;
 var ticktime;
 var proctime;
+var animframe;
 
 async function main() {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -75,8 +76,6 @@ async function main() {
     // analyser.maxDecibels = -30;
 
     function animate() {
-        requestAnimationFrame(animate);
-
         // Time tracking
         framestarttime = performance.now() - lastframetime;
         framedelay = performance.now() - frameend;
@@ -181,9 +180,6 @@ async function main() {
         }
     }
 
-    // Start animating
-    requestAnimationFrame(animate);
-
     // Proccess audio data
     while (true) {
         ticktime = performance.now() - thistick;
@@ -204,6 +200,9 @@ async function main() {
         bass = dataArray.slice(0, rang).reduce((a, v) => (a + v), 0) / (rang * 255);
 
         proctime = performance.now() - thistick;
+
+        cancelAnimationFrame(animframe);
+        animframe = requestAnimationFrame(animate);
 
         await sleep(RATE - proctime);
     }
