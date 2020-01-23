@@ -179,7 +179,11 @@ async function main() {
         } else {
             debugtarget.innerHTML = "";
         }
+
+        requestAnimationFrame(animate);
     }
+
+    requestAnimationFrame(animate);
 
     // Proccess audio data
     while (true) {
@@ -201,10 +205,6 @@ async function main() {
         bass = dataArray.slice(0, rang).reduce((a, v) => (a + v), 0) / (rang * 255);
 
         proctime = performance.now() - thistick;
-
-        // Request frame with latest data
-        cancelAnimationFrame(animframe);
-        animframe = requestAnimationFrame(animate);
 
         await sleep(RATE - proctime);
     }
