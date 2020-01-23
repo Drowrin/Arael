@@ -16,8 +16,9 @@
     "url": "https://github.com/Drowrin/Arael/issues"
   },
   "homepage": "https://github.com/Drowrin/Arael#readme",
-  "devDependencies": {
+  "dependencies": {
     "electron": "^7.1.7",
-    "electron-localshortcut": "3.2.1"
+    "electron-localshortcut": "3.2.1",
+    "electron-packager": "^14.2.0"
   }
 }
